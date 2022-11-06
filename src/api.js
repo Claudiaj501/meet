@@ -62,10 +62,14 @@ const getToken = async (code) => {
 export const getEvents = async () => {
   NProgress.start();
 
-  if (window.location.href.startsWith("http://localhost")) {
-    NProgress.done();
-    return mockData;
-  }
+  const isLocal =
+  window.location.href.startsWith("http://127.0.0.1") ||
+  window.location.href.startsWith("http://localhost");
+
+if (isLocal) {
+  NProgress.done();
+  return mockData;
+}
 
   const token = await getAccessToken();
 
