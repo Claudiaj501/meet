@@ -11,6 +11,7 @@
  import axios from "axios";
  import NProgress from "nprogress";
 
+
  export const extractLocations = (events) => {
   var extractLocations = events.map((event) => event.location);
   var locations = [...new Set(extractLocations)];
