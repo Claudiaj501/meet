@@ -79,6 +79,7 @@ describe("filter events by city", () => {
   });
 
   test("User can select a city from the suggested list", async () => {
+    await page.waitForSelector('.city')
     await page.type(".city", "Berlin", { delay: 100 });
     await page.click(".suggestions li");
     const locationText = await page.$eval(
