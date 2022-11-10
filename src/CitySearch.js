@@ -68,7 +68,7 @@ class CitySearch extends Component {
             this.setState({ showSuggestions: true });
           }}
         />
-        <ul className="suggestions" style={this.state.getSuggestionsStyle()}>
+        <ul className="suggestions" style={this.state.showSuggestions ? {} : { display: 'none' }}>
           {this.state.suggestions.map((suggestion) => (
             <li
               key={suggestion}
