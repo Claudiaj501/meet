@@ -14,6 +14,7 @@
   justify-content: center;
   margin-top: 16px;
   margin-bottom: 24px;
+  align-items: flex-end;
 }
 
 ul {
@@ -53,6 +54,7 @@ input[type="number"] {
   flex-direction: column;
   margin-right: 16px;
   position: relative;
+  justify-content: flex-end;
 }
 
 .suggestions {
@@ -137,8 +139,9 @@ input[type="number"] {
 }
 
 .Alert {
-  position: fixed;
-  top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
 .data-vis-wrapper {

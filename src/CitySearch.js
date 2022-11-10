@@ -33,14 +33,30 @@ class CitySearch extends Component {
   handleItemClicked = (suggestion) => {
     this.setState({
       query: suggestion,
+      suggestions: [],
       showSuggestions: false,
+      infoText: "",
     });
     this.props.updateEvents(suggestion);
+  };
+
+  getSuggestionsStyle = () => {
+    return this.state.showSuggestions
+      ? {
+          top: this.state.infoText === "" ? "48px" : "70px",
+        }
+      : { display: "none" };
+  };
+
+  hideSuggestions = () => {
+    this.setState({
+      showSuggestions: false,
+    });
   };
   
   render() {
     return (
-      <div className="CitySearch">
+      <div className="CitySearch" onBlur={this.hideSuggestions}>
         <InfoAlert text={this.state.infoText} />
         <input
           type="text"
@@ -52,7 +68,7 @@ class CitySearch extends Component {
             this.setState({ showSuggestions: true });
           }}
         />
-        <ul className="suggestions" style={this.state.showSuggestions ? {} : { display: "none" }}>
+        <ul className="suggestions" style={this.state.getSuggestionsStyle()}>
           {this.state.suggestions.map((suggestion) => (
             <li
               key={suggestion}
