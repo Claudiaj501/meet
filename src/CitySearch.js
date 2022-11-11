@@ -5,7 +5,7 @@ class CitySearch extends Component {
   state = {
     query: "",
     suggestions: [],
-    sshowSuggestions: false,
+    showSuggestions: false,
     infoText: "",
   };
 
@@ -72,7 +72,7 @@ class CitySearch extends Component {
           {this.state.suggestions.map((suggestion) => (
             <li
               key={suggestion}
-              onClick={() => this.handleItemClicked(suggestion)}
+              onMouseDown={() => this.handleItemClicked(suggestion)}
             >
               {suggestion}
             </li>
