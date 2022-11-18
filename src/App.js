@@ -1,76 +1,85 @@
-import React, { Component } from "react";
-import "./App.css";
-import EventList from "./EventList";
-import CitySearch from "./CitySearch";
-import NumberOfEvents from "./NumberOfEvents";
-import { InfoAlert } from "./Alert";
-import { extractLocations, getEvents } from "./api";
-import "./nprogress.css";
-// import { mockData } from "./mock-data";
+import React, { Component } from 'react';
+import './App.css';
+import EventList from './EventList';
+import CitySearch from './CitySearch';
+import NumberOfEvents from './NumberOfEvents';
+import { getEvents, extractLocations } from './api';
+import './nprogress.css';
+import { WarningAlert } from "./Alert";
+
 
 class App extends Component {
-  state = {
-    events: [],
-    locations: [],
-    numberOfEvents: 32,
-  };
 
-  updateEvents = (location, eventCount) => {
-    getEvents().then((events) => {
-      const locationEvents =
-        location === "all"
-          ? events
-          : events.filter((event) => event.location === location);
-      this.setState({
-        events: locationEvents.slice(0, this.state.numberOfEvents),
-      });
-    });
-  };
+    state = {
+        events: [],
+        locations: [],
+        locationSelected: 'all',
+        numberOfEvents: 32
+    }
 
-  updateNumberOfEvents(number) {
-    this.setState({
-      numberOfEvents: number,
-    });
-  }
-
-  componentDidMount() {
-    this.mounted = true;
-    getEvents().then((events) => {
-      if (this.mounted) {
+    async componentDidMount() {
+        this.mounted = true;
+        const isOffline = navigator.onLine ? false : true;
         this.setState({
-          events: events.slice(0, this.state.numberOfEvents),
-          locations: extractLocations(events),
+            offlineInfo: isOffline
+                ? "No internet connection. Data is loaded from cache."
+                : null
         });
-      }
-    });
+        getEvents().then((events) => {
+          if (this.mounted) {
+              this.setState({ 
+                  events: events.slice(0, this.state.numberOfEvents), 
+                  locations: extractLocations(events)
+              });
+          }
+      });
   }
+    componentWillUnmount(){
+        this.mounted = false;
+    }
+    updateEvents = (location, maxNumEvents) => {
+        if (maxNumEvents === undefined) {
+            maxNumEvents = this.state.numberOfEvents;
+        } else(
+            this.setState({ numberOfEvents: maxNumEvents })
+        )
+        if (location === undefined) {
+            location = this.state.locationSelected;
+        }
+        getEvents().then((events) => {
+            let locationEvents = (location === 'all') 
+                ? events 
+                : events.filter((event) => event.location === location);
+            const isOffline = navigator.onLine ? false : true;
+            this.setState({
+                events: locationEvents.slice(0, maxNumEvents),
+                numberOfEvents: maxNumEvents,
+                locationSelected: location,
+                offlineInfo: isOffline
+                    ? "No internet connection. Data is loaded from cache."
+                    : null
+            });
+        });
+    }
 
-  componentWillUnmount() {
-    this.mounted = false;
-  }
+    render() {
+        return (
+            <div className="App">
 
-  render() {
-    return (
-      <div className="App">
-        {!navigator.onLine && (
-          <InfoAlert
-            className="alert-centered"
-            text="App is currently offline. You are seeing your cached data."
-          />
-        )}
-        <div className="filters">
-          <CitySearch
-            locations={this.state.locations}
-            updateEvents={this.updateEvents}
-          />
-          <NumberOfEvents
-            num={this.state.numberOfEvents}
-            updateNumberOfEvents={(num) => this.updateNumberOfEvents(num)}
-          />
-        </div>
-        <EventList events={this.state.events} />
-      </div>
-    );
-  }
+                <CitySearch 
+                    locations={this.state.locations}  
+                    updateEvents={this.updateEvents} />
+                <NumberOfEvents 
+                    events={this.state.events}
+                    updateEvents={this.updateEvents}/>
+                <div className="warningAlert">
+                    <WarningAlert text={this.state.offlineInfo} />
+                </div>
+                <EventList 
+                    events={this.state.events}/>  
+
+            </div>
+        );
+    }
 }
 export default App;
