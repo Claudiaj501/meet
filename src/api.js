@@ -29,7 +29,7 @@ const getToken = async (code) => {
   access_token && localStorage.setItem("access_token", access_token);
   return access_token;
 };
-const checkToken = async (accessToken) => {
+export const checkToken = async (accessToken) => {
   const result = await fetch(
     `https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${accessToken}`
   )
